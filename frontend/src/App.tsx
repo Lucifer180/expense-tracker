@@ -23,7 +23,7 @@ function GuestOnly({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Protected><Dashboard /></Protected>} />
           <Route path="/login" element={<GuestOnly><LoginPage /></GuestOnly>} />
