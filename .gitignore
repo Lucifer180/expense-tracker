@@ -16,3 +16,7 @@ __pycache__/
 # Build output
 dist/
 build/
+!.env.example
+
+# local leftovers
+_to_delete/
