@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,10 +12,17 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Expense Tracker API")
 
-# Lets the React dev server (a different port = a different origin) call this API.
+# CORS matches on origin (scheme + host) only, so strip any path from FRONTEND_URL
+# (e.g. https://user.github.io/expense-tracker -> https://user.github.io).
+def _origin(url: str) -> str:
+    parsed = urlparse(url)
+    return f"{parsed.scheme}://{parsed.netloc}"
+
+
+# Lets the deployed frontend and the local React dev server call this API.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=list({settings.frontend_url.rstrip("/"), "http://localhost:5173", "http://127.0.0.1:5173"}),
+    allow_origins=list({_origin(settings.frontend_url), "http://localhost:5173", "http://127.0.0.1:5173"}),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
